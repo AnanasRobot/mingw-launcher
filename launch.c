@@ -4,6 +4,8 @@
 
 #define MAX_PATH_LEN 255
 
+void prepend_to_env(const char*, const char*);
+
 int main()
 {
 	printf("Launching MinGW console...\n");
@@ -14,22 +16,40 @@ int main()
 
 	printf("MinGW binaries path: %s\n", mingw_bin_dir);
 
-	char* path = getenv("PATH");
-
-	// Define the new path
-	// new_path = mingw_bin_dir;path
-	// Length is 5 (for "test=") + strlen(mingw_bin_dir) + 1 (for the colon) + strlen(path) + 1 (for terminator)
-	const size_t new_path_len = 5 + strlen(mingw_bin_dir) + 1 + strlen(path) + 1;
-	char new_path[new_path_len];
-	new_path[0] = 0;	// Be sure the null terminator is there
-	strcat(new_path, "path=");
-	strcat(new_path, mingw_bin_dir);
-	strcat(new_path, ";");
-	strcat(new_path, path);
-
-	putenv(new_path);
+	prepend_to_env(mingw_bin_dir, "PATH");
 
 	system("cmd /k cd \\");
 
 	return 0;
+}
+
+void prepend_to_env(const char* item, const char* var)
+{
+	// Get the previous value of the environment variable
+	char* old_value = getenv(var);
+
+	// Format is <var>=<new item>;<previous value>
+	// Length of variable name
+	// 1 for =
+	// Length of item
+	// 1 for ;
+	// Length of previous value
+	// 1 for null terminator
+	const size_t putenv_arg_len = strlen(var) + 1 + strlen(item) + 1 + strlen(old_value) + 1;
+
+	// Allocate space for the putenv argument
+	char putenv_arg[putenv_arg_len];
+
+	// Put a null terminator on
+	putenv_arg[0] = 0;
+
+	// Build up the argument
+	strcat(putenv_arg, var);
+	strcat(putenv_arg, "=");
+	strcat(putenv_arg, item);
+	strcat(putenv_arg, ";");
+	strcat(putenv_arg, old_value);
+
+	// Set the environment variable
+	putenv(putenv_arg);
 }
