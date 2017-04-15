@@ -2,16 +2,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define MAX_PATH_LEN 255
-
 void prepend_to_env(const char*, const char*);
 
 int main()
 {
 	printf("Launching MinGW console...\n");
 
-	char mingw_bin_dir[MAX_PATH_LEN];       // Absolute path to the MinGW binaries
-	getcwd(mingw_bin_dir, MAX_PATH_LEN);    // Start with the current working dir
+	char mingw_bin_dir[PATH_MAX];       	// Absolute path to the MinGW binaries
+	getcwd(mingw_bin_dir, PATH_MAX);    	// Start with the current working dir
 	strcat(mingw_bin_dir, "\\bin");         // Assume a standard directory structure
 
 	printf("MinGW binaries path: %s\n", mingw_bin_dir);
