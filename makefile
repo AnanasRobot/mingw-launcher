@@ -1,7 +1,7 @@
 # Compiler options
 CC=gcc
 CFLAGS=-c -Wall
-LDFLAGS=-ljson-c
+LDFLAGS=
 
 # For cross-platform with Windows
 # On Unix, just rm
